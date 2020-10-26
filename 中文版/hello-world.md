@@ -1,0 +1,246 @@
+# 简介 - hello world!
+
+如果你正在使用c/c++（作为开发语言），选择它的原因可能是你需要对操作系统有底层的访问需求，或者你榨尽最后一点性能，或者两者都是。Rust语言
+的目标是提供与c++同级别的内存抽象，同层次的性能，但是比c++更安全且更具生产力。
+If you are using C or C++, it is probably because you have to - either you need
+low-level access to the system, or need every last drop of performance, or both.
+Rust aims to offer the same level of abstraction around memory, the same
+performance, but be safer and make you more productive.
+
+进一步来讲，相比c++来说，有很多你可能更倾向使用的语言：Java, Scala, Haskell, Python等等，但是你没有选择以上这些语言
+因为他们的抽象程度都太高了(你不能直接访问内存，你被迫使用垃圾回收机制等等)，或者存在性能问题(性能无法预测或者根本就不够快)。
+Concretely, there are many languages out there that you might prefer to use to
+C++: Java, Scala, Haskell, Python, and so forth, but you can't because either
+the level of abstraction is too high (you don't get direct access to memory,
+you are forced to use garbage collection, etc.), or there are performance issues
+(either performance is unpredictable or it's simply not fast enough). Rust does
+Rust不强制你使用垃圾收集，如同c++一样，你可以和指向内存的裸指针'玩耍',Rust赞同c++'使用时才为止付出代价'的哲学思想。
+
+not force you to use garbage collection, and as in C++, you get raw pointers to
+memory to play with. Rust subscribes to the 'pay for what you use' philosophy of
+如果你不使用一个特性，那么你不会因为它的存在而付出任何代价。此外，Rust中所有的语言特性都有可预测的代价(而且通常代价都很小)。
+
+C++. If you don't use a feature, then you don't pay any performance overhead for
+its existence. Furthermore, all language features in Rust have a predictable (and
+usually small) cost.
+
+这些约束条件让Rust成为了（不可多得）的可行替代方案，而且Rust有优势：内存安全-Rust的类型系统保证你不
+会遇见在c++中普遍遇见的内存错误：内存泄露，访问未初始化内存，悬挂指针，这些在Rust中都是不可能遇见到的。
+Whilst these constraints make Rust a (rare) viable alternative to C++, Rust also
+has benefits: it is memory safe - Rust's type system ensures that you don't get
+the kind of memory errors which are common in C++ - memory leaks, accessing un-
+initialised memory, dangling pointers - all are impossible in Rust. Furthermore,
+并且在其他约束被允许时，Rust还会努力的防止其他安全问题。比如，所有的数组索引都会通过越界检查
+(当然，如果你想避免这些开销也可以(以牺牲安全为代价))- Rust允许你在unsafe块里连同其他unsaf事情作做这些操作.
+whenever other constraints allow, Rust strives to prevent other safety issues
+too - for example, all array indexing is bounds checked (of course, if you want
+to avoid the cost, you can (at the expense of safety) - Rust allows you to do
+至关重要的，Rust保证在unsafe块中的不安全操作停留在unafe块而不会影响你的其余程序。
+最后，Rust借鉴了现代程序设计的很多概念并将他们引入到系统语言空间。希望这些能让程序员在做Rust开发时生产力更高，效率更快，心情更愉快。
+this in unsafe blocks, along with many other unsafe things. Crucially, Rust
+ensures that unsafety in unsafe blocks stays in unsafe blocks and can't affect
+the rest of your program). Finally, Rust takes many concepts from modern
+programming languages and introduces them to the systems language space.
+Hopefully, that makes programming in Rust more productive, efficient, and
+enjoyable.
+
+在这一章节的剩下部分我们将下载安装Rust，用Cargo创建一个最小的工程实现hello world。
+In the rest of this section we'll download and install Rust, create a minimal
+Cargo project, and implement Hello World.
+
+
+## Getting Rust // 获取Rust
+你可以从 [http://www.rust-lang.org/install.html](http://www.rust-lang.org/install.html)获取Rust。
+从这下个URL你下载的将包括Rust编译器，标准库，Cargo(Rust的包管理器和构建工具)
+You can get Rust from [http://www.rust-lang.org/install.html](http://www.rust-lang.org/install.html).
+The downloads from there include the Rust compiler, standard libraries, and
+Cargo, which is a package manager and build tool for Rust.
+
+Rust可以在三种渠道上获取：stable, beta, and nightly.Rust发行速度很快，每6个星期进行一次发布。
+在发行日，nightly变为beta，beta变为stable。
+Rust is available on three channels: stable, beta, and nightly. Rust works on a
+rapid-release, schedule with new releases every six weeks. On the release date,
+nightly becomes beta and beta becomes stable.
+
+Nightly版本每天晚上进行更新，那些想要试验前沿特性并且保证他们的库能在Rust的未来版本中使用的开发者是此版本的理想用户。
+Nightly is updated every night and is ideal for users who want to experiment with
+cutting edge features and ensure that their libraries will work with future Rust.
+
+Stable版本是大多数的正确选择。Rust的稳定性只在此类版本中得到保证。
+Stable is the right choice for most users. Rust's stability guarantees only
+apply to the stable channel.
+
+
+Beta的设计主要用于用户的CI, 以检查他们的代码是否能继续按照预期运行。
+Beta is designed to mostly be used in users' CI to check that their code will
+continue to work as expected.
+
+所以，你很可能想要stable版本。如果你是Linux或者Os 系统，最简单的安装Rust的方式是运行
+So, you probably want the stable channel. If you're on Linux or OS X, the
+easiest way to get it is to run
+
+```
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+在Windows系统上，同样简单的方式是运行
+On Windows, a similarly easy way would be to run
+
+```
+choco install rust
+```
+其他安装方式，见 [http://www.rust-lang.org/install.html](http://www.rust-lang.org/install.html).
+For other ways to install, see [http://www.rust-lang.org/install.html](http://www.rust-lang.org/install.html).
+
+你可以在[github.com/rust-lang/rust](https://github.com/rust-lang/rust)找到源码来构建编译器，运行`./configure && make rustc`. 
+You can find the source at [github.com/rust-lang/rust](https://github.com/rust-lang/rust).
+To build the compiler, run `./configure && make rustc`. See
+[building-from-source](https://github.com/rust-lang/rust#building-from-source)
+更多详细使用说明见[building-from-source](https://github.com/rust-lang/rust#building-from-source)
+for more detailed instructions.
+
+
+## Hello World!
+
+构建Rust程序最简单且最常见的方式是使用Cargo。运行`cargo new --bin hello`来开始一个名字为'hello world'
+的工程。这个命令将会创建一个新的'hello'目录, hello下有一个`Cargo.toml`文件和一个src目录，src目录下有一个main.rs文件。
+The easiest and most common way to build Rust programs is to use Cargo. To start
+a project called `hello` using Cargo, run `cargo new --bin hello`. This will
+create a new directory called `hello` inside which is a `Cargo.toml` file and
+a `src` directory with a file called `main.rs`.
+
+`Cargo.toml` 定义了这个工程的依赖和其他一些元数据信息。我们之后将会回来详细介绍。
+`Cargo.toml` defines dependencies and other metadata about our project. We'll
+come back to it in detail later.
+
+我们所有的源代码都将在src目录下。main.rs已经包含了一个Hello world程序。里面的内容是这样的：
+All our source code will go in the `src` directory. `main.rs` already contains
+a Hello World program. It looks like this:
+
+```rust
+fn main() {
+    println!("Hello, world!");
+}
+```
+
+运行命令`cargo build`来构建程序。运行命令`cargo run`构建并执行程序。如果你执行了后面那个命令，
+你应该在控制台上看到hello world。hello world程序执行成功。
+To build the program, run `cargo build`. To build and run it, `cargo run`. If
+you do the latter, you should be greeted in the console. Success!
+
+Cargo将会创建一个target目录并且把可执行程序放在里面
+Cargo will have made a `target` directory and put the executable in there.
+
+如果你想直接使用编译器命令你可以执行`rustc src/hello.rs`，这个命令将会产生一个名字为hello的可执行文件。
+使用`rustc --help`命令查看更多编译选项。
+If you want to use the compiler directly you can run `rustc src/hello.rs` which
+will create an executable called `hello`. See `rustc --help` for lots of
+options.
+
+现在我们回到代码。几个有趣的点 - 我们使用fn来定义一个函数或者方法。main我们程序的默认入口点
+(我们会把程序参数放到最后)。Rust里面没有像c++那样分离式的函数声明或者头文件
+OK, back to the code. A few interesting points - we use `fn` to define a
+function or method. `main()` is the default entry point for our programs (we'll
+leave program args for later). There are no separate declarations or header
+files as with C++. `println!` is Rust's equivalent of printf. The `!` means that
+Rust的`println!`等同于c/c++的printf。`!`表示这是一个宏。标准库中一部分子集不需要显式的引入。
+`println!` 宏就是这个子集中的一个。
+it is a macro. A subset of the standard library is available without needing to
+be explicitly imported/included (the prelude). The `println!` macro is included
+as part of that subset.
+
+让我们对程序做一点小的修改：
+Lets change our example a little bit:
+
+```rust
+fn main() {
+    let world = "world";
+    println!("Hello {}!", world);
+}
+```
+
+`let`被用来创建一个变量，world是这个变量的名字，他是一个string类型(严格上来说他是`&'static str`类型，稍后会详细介绍)
+`let` is used to introduce a variable, world is the variable name and it is a
+string (technically the type is `&'static str`, but more on that later). We
+我们不需要指定他的类型，编译器将会为我们推导出来。
+don't need to specify the type, it will be inferred for us.
+
+在`println!`中使用`{}`就像在printf中使用 `%s`。
+Using `{}` in the `println!` statement is like using `%s` in printf. In fact, it
+实际上Rust的方式更普遍一点，因为Rust将会尝试将本身不是string类型的变量转化成string
+is a bit more general than that because Rust will try to convert the variable to
+a string if it is not one already<sup>[1](#1)</sup> (like `operator<<()` in C++).
+You can easily play around with this sort of thing - try multiple strings and
+我们可以很容易的摆弄这些东西。尝试多个string，使用number类型(整型和浮点字面量也可以)
+using numbers (integer and float literals will work).
+
+如果你愿意，你可以显式的给'world'一个类型：
+If you like, you can explicitly give the type of `world`:
+
+```rust
+let world: &'static str = "world";
+```
+
+在c++中，我们这样写'T x' 来声明一个'T'类型的变量'x'.在Rust中我们这样写'x: T',无论是在'let'声明或者函数签名等等。
+In C++ we write `T x` to declare a variable `x` with type `T`. In Rust we write
+`x: T`, whether in `let` statements or function signatures, etc. Mostly we omit
+大多情况下，我们在let声明时省略显式类型，但是作为函数参数时是需要的。让我们添加另外一个函数
+explicit types in `let` statements, but they are required for function看看他如何工作
+arguments. Lets add another function to see it work:
+
+```rust
+fn foo(_x: &'static str) -> &'static str {
+    "world"
+}
+
+fn main() {
+    println!("Hello {}!", foo("bar"));
+}
+```
+
+函数foo存在单个string字面量类型的参数'_x'(我们从main中将'bar'传递给他)
+The function `foo` has a single argument `_x` which is a string literal (we pass
+it "bar" from `main`)<sup>[2](#2)</sup>.
+
+函数的返回值在'->'后被给出。如果函数不反回任何数据(类似c++中的void)，我们不需要给出返回值(像main中那样)
+The return type for a function is given after `->`. If the function doesn't
+return anything (a void function in C++), we don't need to give a return type at
+如果你想亲自显式，你可以这么写'->()', '()'是Rust中的void类型。
+all (as in `main`). If you want to be super-explicit, you can write `-> ()`,
+`()` is the void type in Rust.
+
+You don't need the `return` keyword in Rust, if the last expression in a
+function body (or any other block, we'll see more of this later) is not finished
+with a semicolon, then it is the return value. So `foo` will return
+"world". The `return` keyword still exists so we can do early returns. You can
+replace `"world"` with `return "world";` and it will have the same effect.
+
+
+## Why?
+
+I would like to motivate some of the language features above. Local type
+inference is convenient and useful without sacrificing safety or performance
+(it's even in modern versions of C++ now). A minor convenience is that language
+items are consistently denoted by keyword (`fn`, `let`, etc.), this makes
+scanning by eye or by tools easier, in general the syntax of Rust is simpler and
+more consistent than C++. The `println!` macro is safer than printf - the number
+of arguments is statically checked against the number of 'holes' in the string
+and the arguments are type checked. This means you can't make the printf
+mistakes of printing memory as if it had a different type or addressing memory
+further down the stack by mistake. These are fairly minor things, but I hope
+they illustrate the philosophy behind the design of Rust.
+
+
+##### 1
+
+This is a programmer specified conversion which uses the `Display` trait, which
+works a bit like `toString` in Java. You can also use `{:?}` which gives a
+compiler generated representation which is sometimes useful for debugging. As
+with printf, there are many other options.
+
+##### 2
+
+We don't actually use that argument in `foo`. Usually,
+Rust will warn us about this. By prefixing the argument name with `_` we avoid
+these warnings. In fact, we don't need to name the argument at all, we could
+just use `_`.
