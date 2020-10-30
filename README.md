@@ -1,5 +1,6 @@
 # Rust For Systems Programmers
 为系统程序提供的Rust教程
+[我在控制台上做了一点修改---yshi]
 
 这个一个为有c/c++程序员的Rust教程
 A Rust tutorial for experienced C and C++ programmers.
